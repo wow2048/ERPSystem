@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.SalesDetailsDao">
+
+    <select id="findSalesDetails" resultType="com.nju.edu.erp.model.po.SalesDetailsPO">
+        <!--销售-->
+        select sale_sheet.create_time as date, product.name as productName, product.type as productType, sale_sheet_content.quantity as quantity, sale_sheet_content.unit_price as unitPrice, sale_sheet_content.total_price as totalPrice, sale_sheet.state as state, "销售" as remark
+        from
+        sale_sheet, sale_sheet_content, product, customer
+        where
+<!--        sale_sheet.state = "审批完成" and-->
+        sale_sheet.create_time between #{beginDate} and #{endDate} and
+        product.name = #{productName} and
+        customer.name = #{customer} and
+        sale_sheet.salesman = #{salesman} and
+        customer.type = "销售商" and customer.id = sale_sheet.supplier and
+        sale_sheet.id = sale_sheet_content.sale_sheet_id and
+        sale_sheet_content.pid = product.id
+        union all
+        <!--销售后退货-->
+        select sale_returns_sheet.create_time as date, product.name as productName, product.type as productType, sale_returns_sheet_content.quantity as quantity, sale_returns_sheet_content.unit_price as unitPrice, sale_returns_sheet_content.total_price as totalPrice, sale_returns_sheet.state as state, "销售退货" as remark
+        from
+        sale_returns_sheet, sale_returns_sheet_content, product, customer, sale_sheet
+        where
+<!--        sale_returns_sheet.state = "审批完成" and-->
+        sale_returns_sheet.create_time between #{beginDate} and #{endDate} and
+        product.name = #{productName} and
+        sale_returns_sheet_content.pid = product.id and
+        sale_sheet.salesman = #{salesman} and
+        sale_returns_sheet.sale_sheet_id = sale_sheet.id and
+        customer.name = #{customer} and
+        customer.type = "销售商" and customer.id = sale_sheet.supplier and
+        sale_returns_sheet.id = sale_returns_sheet_content.sale_returns_sheet_id
+    </select>
+
+</mapper>

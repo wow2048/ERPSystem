@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.ReceiptSheetDao">
+    <insert id="saveSheet">
+        insert into receipt_sheet (id, customer_id, operator, total_amount, state, create_time, is_read)
+        values (#{id}, #{customerId}, #{operator}, #{totalAmount}, #{state}, #{createTime}, #{isRead}) ;
+    </insert>
+
+    <insert id="saveReceiveAccounts" useGeneratedKeys="true" keyProperty="id">
+        insert into receive_account () values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.bankId},#{item.receiveMoney},#{item.remark})
+        </foreach>
+    </insert>
+
+    <select id="findAllSheet" resultType="com.nju.edu.erp.model.po.ReceiptSheetPO">
+        select * from receipt_sheet;
+    </select>
+
+    <select id="findSheetById" resultType="com.nju.edu.erp.model.po.ReceiptSheetPO">
+        select * from receipt_sheet where id = #{id};
+    </select>
+
+    <update id="updateSheetState">
+        update receipt_sheet
+        set state = #{state}
+        where id = #{sheetId}
+    </update>
+
+    <select id="getLatest" resultType="com.nju.edu.erp.model.po.ReceiptSheetPO">
+        select * from receipt_sheet order by id desc limit 0,1 ;
+    </select>
+
+    <select id="findReceiveAccountsBySheetId" resultType="com.nju.edu.erp.model.po.ReceiveAccountPO">
+        select * from receive_account where id = #{sheetId};
+    </select>
+
+    <!--根据单据状态获取单据-->
+    <select id="findSheetByState" resultType="com.nju.edu.erp.model.po.ReceiptSheetPO">
+        select * from receipt_sheet where state = #{state};
+    </select>
+
+    <select id="getApprovalUnreadByOperator" resultType="com.nju.edu.erp.model.po.ReceiptSheetPO">
+        select * from receipt_sheet where is_read = 0 and operator = #{operator} and state = '审批完成';
+    </select>
+
+    <update id="setSheetRead">
+        update receipt_sheet
+        set is_read = true
+        where id = #{sheetId}
+    </update>
+</mapper>

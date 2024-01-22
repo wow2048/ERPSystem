@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.StaffDao">
+
+    <insert id="createStaff" parameterType="StaffPO" useGeneratedKeys="true" keyProperty="id">
+        insert into staff (`id`, `name`, `gender`, `birth`, `phone`, `type`, `salary`,`jobSalary`,`jobLevel`, `moneyCalculate`, `moneyMethod`, `account`)
+        values (#{id}, #{name}, #{gender}, #{birth}, #{phone}, #{type}, #{salary}, #{jobSalary},#{jobLevel},#{moneyCalculate}, #{moneyMethod}, #{account})
+    </insert>
+
+    <update id="updateOne" parameterType="StaffPO">
+        update staff
+        <set>
+            <if test = "name != null">`name` = #{name}, </if>
+            <if test = "gender != null">`gender` = #{gender}, </if>
+            <if test = "birth != null">`birth` = #{birth}, </if>
+            <if test = "phone != null">`phone` = #{phone}, </if>
+            <if test = "type != null">`type` = #{type}, </if>
+            <if test = "salary != null">`salary` = #{salary}, </if>
+            <if test = "jobSalary != null">`jobSalary` = #{jobSalary}, </if>
+            <if test = "jobLevel != null">`jobLevel` = #{jobLevel}, </if>
+            <if test = "moneyCalculate != null">`moneyCalculate` = #{moneyCalculate}, </if>
+            <if test = "moneyMethod != null">`moneyMethod` = #{moneyMethod}, </if>
+            <if test = "account != null">`account` = #{account}, </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="findOneById" resultType="com.nju.edu.erp.model.po.StaffPO">
+        select * from staff where id=#{supplier}
+    </select>
+
+
+
+    <select id="findAllById" resultType="com.nju.edu.erp.model.po.StaffPO">
+        select * from staff
+    </select>
+
+    <delete id="deleteById">
+        delete from staff where id = #{id}
+    </delete>
+
+
+    <select id="findStrategyByPosition" resultType="java.lang.String">
+        select money_strategy from job_salary where position = #{position}
+    </select>
+
+    <select id="findPositionSalary" resultType="integer">
+        select base_salary from job_salary where position =#{position}
+    </select>
+
+    <select id="findCommission" resultType="integer">
+        select SUM(final_amount)*0.01 commission from sale_sheet where salesman = #{salesman}
+    </select>
+
+    <select id="findTypeByName" resultType="java.lang.String">
+        select type from staff where name = #{name}
+    </select>
+
+    <select id="findBaseSalaryById" resultType="integer">
+        select salary from staff where id = #{id}
+    </select>
+    <resultMap id="StaffPO" type="com.nju.edu.erp.model.po.StaffPO">
+        <id column="id" property="id"></id>
+        <result column="name" property="type"></result>
+        <result column="gender" property="gender"></result>
+        <result column="birth" property="name"></result>
+        <result column="phone" property="phone"></result>
+        <result column="type" property="type"></result>
+        <result column="salary" property="salary"></result>
+        <result column="jobSalary" property="jobSalary"></result>
+        <result column="jobLevel" property="jobLevel"></result>
+        <result column="moneyCalculate" property="moneyCalculate"></result>
+        <result column="moneyMethod" property="moneyMethod"></result>
+        <result column="account" property="account"></result>
+    </resultMap>
+
+</mapper>

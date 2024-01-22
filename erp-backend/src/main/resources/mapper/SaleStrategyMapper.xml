@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.SaleStrategyDao">
+    <insert id="saveSaleStrategyCustomer" parameterType="SaleStrategyCustomerPO">
+        insert into sale_strategy_customer (id, sale_strategy_type, begin_time, end_time, level, discount, voucher_amount_customer)
+        values (#{id},#{saleStrategyType},#{beginTime},#{endTime},#{level},#{discount},#{voucherAmountCustomer})
+    </insert>
+
+    <insert id="saveSaleStrategyProduct" parameterType="SaleStrategyProductPO">
+        insert into sale_strategy_product (id, sale_strategy_type, begin_time, end_time, total_price, special_price)
+        values (#{id},#{saleStrategyType},#{beginTime},#{endTime},#{totalPrice},#{specialPrice})
+    </insert>
+
+    <insert id="saveSaleStrategyPrice" parameterType="SaleStrategyPricePO">
+        insert into sale_strategy_price (id, sale_strategy_type, begin_time, end_time, trigger_price, voucher_amount_price)
+        values (#{id},#{saleStrategyType},#{beginTime},#{endTime},#{triggerPrice},#{voucherAmountPrice})
+    </insert>
+
+
+    <select id="findSaleStrategyCustomer" resultType="com.nju.edu.erp.model.po.SaleStrategyCustomerPO">
+        select * from sale_strategy_customer;
+    </select>
+
+    <select id="findSaleStrategyProduct" resultType="com.nju.edu.erp.model.po.SaleStrategyProductPO">
+        select * from sale_strategy_product;
+    </select>
+
+    <select id="findSaleStrategyPrice" resultType="com.nju.edu.erp.model.po.SaleStrategyPricePO">
+        select * from sale_strategy_price;
+    </select>
+
+    <select id="findGiftsByStrategyId" resultType="com.nju.edu.erp.model.po.SaleStrategyGiftPO">
+        select * from sale_strategy_gift where sale_strategy_id = #{saleStrategyId}
+    </select>
+
+    <insert id="saveGifts" useGeneratedKeys="true" keyProperty="id">
+        insert into sale_strategy_gift (sale_strategy_id, pid, name, quantity, subtotal, unit_price) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.strategyId},#{item.pid},#{item.name},#{item.quantity},#{item.subTotal},#{item.unitPrice})
+        </foreach>
+    </insert>
+
+</mapper>

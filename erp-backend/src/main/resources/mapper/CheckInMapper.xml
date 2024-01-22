@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.CheckInDao">
+
+    <insert id="addCheckIn" parameterType="CheckInPO" useGeneratedKeys="true" keyProperty="id">
+        insert into checkin (`id`, `checkRecord`)
+        values (#{id}, #{checkRecord})
+    </insert>
+
+    <select id="findAllById" resultType="com.nju.edu.erp.model.po.CheckInPO">
+        select * from staff where id=#{supplier}
+    </select>
+
+    <select id="findAll" resultType="com.nju.edu.erp.model.po.CheckInPO">
+        select id,MAX(checkRecord) checkRecord FROM checkin GROUP BY id
+    </select>
+
+    <select id="findById" resultType="com.nju.edu.erp.model.po.CheckInPO">
+        select * FROM (select id,MAX(checkRecord) checkRecord FROM checkin GROUP BY id) WHERE id = #{supplier}
+    </select>
+
+    <select id="findAllCheckInLastMonth" resultType="com.nju.edu.erp.model.po.CheckInRecordPO">
+        SELECT id,COUNT(*) times FROM checkin WHERE PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( checkRecord, '%Y%m' ) ) =1 GROUP BY id;
+    </select>
+
+    <select id="findAllCheckInThisMonth" resultType="com.nju.edu.erp.model.po.CheckInRecordPO">
+        select id,COUNT(*) times FROM checkin WHERE DATE_FORMAT(checkRecord,'%Y-%m') = DATE_FORMAT(CURRENT_DATE(),'%Y-%m') GROUP BY id;
+    </select>
+
+    <select id="findCheckInLastMonthById" resultType="integer">
+        select COUNT(*) FROM checkin WHERE PERIOD_DIFF( date_format( now( ) , '%Y%m' ) , date_format( checkRecord, '%Y%m' ) ) =1 AND id = #{id};
+    </select>
+
+    <delete id="deleteById">
+        delete from staff where id = #{id}
+    </delete>
+
+    <resultMap id="CheckInPO" type="com.nju.edu.erp.model.po.CheckInPO">
+        <id column="id" property="id"></id>
+        <result column="checkRecord" property="checkRecord"></result>
+    </resultMap>
+
+</mapper>

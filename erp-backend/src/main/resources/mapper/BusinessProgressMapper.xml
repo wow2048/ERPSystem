@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.BusinessProgressDao">
+
+    <select id="getSaleSheet" resultType="com.nju.edu.erp.model.po.SaleSheetPO">
+        select * from sale_sheet
+        where create_time between #{beginDate} and #{endDate} and salesman = #{salesman}
+        and supplier in ( select id from customer where name = #{customer} )
+    </select>
+
+    <select id="getSaleReturnsSheet" resultType="com.nju.edu.erp.model.po.SaleReturnsSheetPO">
+        select * from sale_returns_sheet
+        where create_time between #{beginDate} and #{endDate}
+        and sale_returns_sheet.sale_sheet_id in (
+        select id from sale_sheet
+        where salesman = #{salesman} and supplier in ( select id from customer where name = #{customer} )
+        )
+    </select>
+
+    <select id="getPurchaseSheet" resultType="com.nju.edu.erp.model.po.PurchaseSheetPO">
+        select * from purchase_sheet
+        where create_time between #{beginDate} and #{endDate} and operator = #{salesman}
+        and supplier in ( select id from customer where name = #{customer} )
+    </select>
+
+    <select id="getPurchaseReturnsSheet" resultType="com.nju.edu.erp.model.po.PurchaseReturnsSheetPO">
+        select * from purchase_returns_sheet
+        where create_time between #{beginDate} and #{endDate}
+        and purchase_returns_sheet.purchase_sheet_id in (
+        select id from purchase_sheet
+        where operator = #{salesman} and supplier in ( select id from customer where name = #{customer} )
+        )
+    </select>
+
+    <select id="getSalarySheet" resultType="com.nju.edu.erp.model.po.SalarySheetPO">
+        select * from salary_sheet
+        where create_time between #{beginDate} and #{endDate}
+        and staff_name = #{customer}
+        and operator = #{salesman}
+    </select>
+
+    <select id="getPaymentSheet" resultType="com.nju.edu.erp.model.po.PaymentSheetPO">
+        select * from payment_sheet
+        where create_time between #{beginDate} and #{endDate}
+        and operator = #{salesman}
+        and customer_id in (select id from customer where name = #{customer})
+    </select>
+
+    <select id="getReceiptSheet" resultType="com.nju.edu.erp.model.po.ReceiptSheetPO">
+        select * from receipt_sheet
+        where create_time between #{beginDate} and #{endDate}
+        and operator = #{salesman}
+        and customer_id in (select id from customer where name = #{customer})
+    </select>
+
+</mapper>

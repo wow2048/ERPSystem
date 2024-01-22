@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.AccountDao">
+
+    <insert id="createAccount" parameterType="AccountPO" useGeneratedKeys="true" keyProperty="id">
+        insert into account (id, `name`, `amount`)
+        values (#{id}, #{name}, #{amount})
+    </insert>
+
+    <update id="updateAccount" parameterType="AccountPO">
+        update account
+        <set>
+            <if test = "name != null">`name` = #{name}, </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="getAccountById" resultType="com.nju.edu.erp.model.po.AccountPO">
+        select * from account where id = #{id}
+    </select>
+
+    <delete id="deleteAccountById">
+        delete from account where id = #{id}
+    </delete>
+
+    <select id="getAccountsByKeys" resultType="com.nju.edu.erp.model.po.AccountPO">
+        select * from account where `name` like '%${keys}%'
+    </select>
+
+    <select id="getAllAccount" resultType="com.nju.edu.erp.model.po.AccountPO">
+        select * from account
+    </select>
+
+    <resultMap id="AccountPO" type="com.nju.edu.erp.model.po.AccountPO">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="amount" property="amount"></result>
+    </resultMap>
+
+    <update id="updateAmount" parameterType="AccountPO">
+        update account
+        set amount = #{amount}
+        where id = #{id}
+    </update>
+</mapper>

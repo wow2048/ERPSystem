@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nju.edu.erp.dao.BusinessConditionDao">
+
+    <select id="getSalesRevenue" resultType="java.lang.Integer">
+        select COALESCE(sum(raw_total_amount), 0) from sale_sheet
+        where
+        create_time between #{beginDate} and #{endDate}
+        and state = "审批完成"
+    </select>
+
+    <select id="getVoucher" resultType="java.lang.Integer">
+        select COALESCE(sum(voucher_amount - raw_total_amount * discount), 0) from sale_sheet
+        where
+        create_time between #{beginDate} and #{endDate}
+        and state = "审批完成"
+        and voucher_amount - raw_total_amount * discount > 0
+    </select>
+
+
+    <select id="getDiscount" resultType="java.lang.Integer">
+        select COALESCE(sum(raw_total_amount - final_amount), 0) from sale_sheet
+        where
+        create_time between #{beginDate} and #{endDate}
+        and state = "审批完成"
+    </select>
+
+
+    <select id="getSalesCost" resultType="java.lang.Integer">
+        select COALESCE(sum(total_amount), 0) from purchase_sheet
+        where
+        create_time between #{beginDate} and #{endDate}
+        and state = "审批完成"
+    </select>
+
+    <select id="getGap" resultType="java.lang.Integer">
+        select COALESCE(sum((purchase_returns_sheet_content.unit_price - purchase_sheet_content.unit_price) * purchase_returns_sheet_content.quantity), 0)
+        from purchase_sheet, purchase_sheet_content, purchase_returns_sheet, purchase_returns_sheet_content
+        where
+        purchase_returns_sheet.state = "审批完成"
+        and purchase_returns_sheet.create_time between #{beginDate} and #{endDate}
+        and purchase_returns_sheet.id = purchase_returns_sheet_content.purchase_returns_sheet_id
+        and purchase_returns_sheet.purchase_sheet_id = purchase_sheet.id
+        and purchase_sheet.id = purchase_sheet_content.purchase_sheet_id
+        and purchase_sheet_content.pid = purchase_returns_sheet_content.pid
+    </select>
+
+    <select id="getLaborCost" resultType="java.lang.Integer">
+        select COALESCE(sum(payable_salary), 0) from salary_sheet
+        where
+        state = "审批完成"
+        and create_time between #{beginDate} and #{endDate}
+    </select>
+
+</mapper>
